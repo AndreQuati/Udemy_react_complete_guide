@@ -4,6 +4,7 @@ import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 import classes from './Burger.module.css';
 
 const burger = (props) => {
+    
     /*Transforming the object received throug props into an array, 
      so we can loop through it and render each item. Steps:
       1 - Object.Keys: This is a native JS function. it loops through the object
@@ -27,6 +28,18 @@ const burger = (props) => {
                 name of the ingredient + the index of the looped array (e.g: salad1, meat1, meat2, etc.)
          - type: The name of the ingredient, so that the object BurgerIngredient knows what
                 to return. E.g: "salad", "meat", etc. 
+      4 - .reduce(function, initial_value) - JS Array method: Flattens the array. 
+           The second parameter, after the function, is the initial value, in this case an empty array.
+            It needs to be set in case no ingredient is received, since reduce will throw an error if 
+            applied to an empty array. 
+            NOTE: It's not necessary to flatten the array to render, it can render arrays nested at
+            multiple levels. In this case, this step is necessary to make it easier to identify
+            if transformedItems is empty. If we don't do this and pass as parameters ingredients
+            with zero quantity, transformedItems will have empty arrays inside it, and if we try
+            to check if it's empty we'd need to check all levels of nested arrays to find if
+            any of the child arrays contain something. 
+            E.g.: if ingredients = {salad: 0, meat: 0} then transformedItems = [[],[]] (length = 2).
+                  After the .reduce, transformedItems = [] (length = 0); 
     */ 
     
     const transformedIngredients = Object.keys(props.ingredients)
@@ -37,11 +50,16 @@ const burger = (props) => {
                 .map( (arrayItem, itemIndex) => {
                     return <BurgerIngredient key={ingredientKey + itemIndex} type={ingredientKey} />;
                 });
-        });
+        })
+        .reduce((newArray, element) => {
+            return newArray.concat(element)});
 
     return (
         <div className={classes.Burger}>
             <BurgerIngredient type="bread-top"/>
+            {/* transformedIngredients is an array that may contain other arrays inside it, but it's
+                rendered correctly without having to manually loop through each item. This is done
+                automatically, no matter how many nested arrays there are. */}
             {transformedIngredients}
             <BurgerIngredient type="bread-bottom"/>
         </div>
