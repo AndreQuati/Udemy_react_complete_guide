@@ -30,7 +30,6 @@ class BurgerBuilder extends Component {
 
     async updatePurchaseState () {
         const ingredients = {...this.state.ingredients};
-        console.log(this.state.ingredients);
         const sum = Object.keys(ingredients)
             .map(igKey => {
                 return ingredients[igKey]
@@ -39,7 +38,6 @@ class BurgerBuilder extends Component {
                return sum + el;
             }, 0);
         await this.setState({purchasable: sum > 0});
-        console.log(this.state.purchasable);
     }
 
     async updateIngredientsState (type, quantity) {
@@ -61,7 +59,6 @@ class BurgerBuilder extends Component {
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice + priceAddition;
         await this.setState({totalPrice: newPrice, ingredients: updatedIngrents});
-        console.log(this.state.ingredients);
         this.updatePurchaseState();
     }
 
