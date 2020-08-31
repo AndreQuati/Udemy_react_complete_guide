@@ -42,7 +42,7 @@ const burger = (props) => {
                   After the .reduce, transformedItems = [] (length = 0); 
     */ 
     
-    const transformedIngredients = Object.keys(props.ingredients)
+    let transformedIngredients = Object.keys(props.ingredients)
         .map(ingredientKey => {
             // Using the spread operator to create a new array
             return [...Array( props.ingredients[ingredientKey] )]
@@ -52,7 +52,11 @@ const burger = (props) => {
                 });
         })
         .reduce((newArray, element) => {
-            return newArray.concat(element)});
+            return newArray.concat(element)}, []);
+
+    if(transformedIngredients.length === 0){
+        transformedIngredients = <p>Please start adding ingredients!</p>;
+    }
 
     return (
         <div className={classes.Burger}>
