@@ -15,10 +15,19 @@ class Layout extends Component {
         this.setState({showSideDrawer: false});
     }
 
+    sideDrawerToggleHandler = () => {
+        // Should never update state using itself in a statement like
+        // {showSideDrawer: this.state.showSideDrawer} due to async nature of state.
+        // Instead, use approach below using a function returning new state
+        this.setState((prevState) => {
+           return { showSideDrawer: !prevState.showSideDrawer }
+        });
+    }
+
     render() {
         return (
             <Aux>
-                <Toolbar />
+                <Toolbar drawerToggledClicked={this.sideDrawerToggleHandler} />
                 <SideDrawer 
                     open={this.state.showSideDrawer} 
                     closed={this.sideDrawerClosedHandler}/>
