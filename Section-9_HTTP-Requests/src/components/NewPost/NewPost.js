@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 
 import './NewPost.css';
 
@@ -22,7 +22,7 @@ class NewPost extends Component {
         //         console.log(response);
         //     });
 
-        axios.post('https://jsonplaceholder.typicode.com/posts', data)
+        axiosInstance.post('/posts', data)
         .then(response => {
             console.log(response);
         });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 
 import './FullPost.css';
 
@@ -18,7 +18,7 @@ class FullPost extends Component {
             // To avoid this issue, checking if this received post id is = this loadedPost id
             // or if loadedPost = null, which means it hasn't been rendered yet
             if(!this.state.loadedPost || this.props.id !== this.state.loadedPost.id) {
-                axios.get('https://jsonplaceholder.typicode.com/posts/' + this.props.id)
+                axiosInstance.get('/posts/' + this.props.id)
                 .then(response => {
                     console.log(response.data);
                     this.setState({loadedPost: response.data});
@@ -28,7 +28,7 @@ class FullPost extends Component {
     }
 
     deletePostHandler = () => {
-        axios.delete('https://jsonplaceholder.typicode.com/posts/' + this.props.id)
+        axiosInstance.delete('/posts/' + this.props.id)
             .then(response => {
                 console.log(response);
             })
