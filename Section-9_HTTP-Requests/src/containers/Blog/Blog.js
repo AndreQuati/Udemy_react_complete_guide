@@ -4,8 +4,15 @@ import axiosInstance from '../../axiosInstance';
 import './Blog.css';
 import { Route, NavLink, Switch } from 'react-router-dom';
 import Posts from './Posts/Posts';
-import NewPost from './NewPost/NewPost';
-import FullPost from './FullPost/FullPost';
+import asyncComponent from '../../hoc/asyncComponent';
+// import NewPost from './NewPost/NewPost';
+
+// Using this hoc component for lazy loading (only loading <NewPost> when required).
+// From React 16.6 this can be achieved with Fragment.
+const AsyncNewPost = asyncComponent(() => {
+    // this import() syntax makes that the import will be done only when this code is executed
+    return import('./NewPost/NewPost');
+});
 
 class Blog extends Component {
     state = {
@@ -43,7 +50,7 @@ class Blog extends Component {
                  {/*Switch guarantees that only one route will be loaded, the first one
                     matching the URL. */}
                 <Switch>
-                    {this.state.auth ? <Route path="/new-post" component={NewPost} /> : null}
+                    {this.state.auth ? <Route path="/new-post" component={AsyncNewPost} /> : null}
                     
                     {/* This path contains a nested route. When this happens, the parent
                     route cannot have the 'exact' property */}
