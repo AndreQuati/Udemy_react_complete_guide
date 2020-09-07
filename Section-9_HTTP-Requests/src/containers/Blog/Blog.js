@@ -1,71 +1,61 @@
 import React, { Component } from 'react';
 import axiosInstance from '../../axiosInstance';
 
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
 import './Blog.css';
+import { Route, NavLink, Switch } from 'react-router-dom';
+import Posts from './Posts/Posts';
+import NewPost from './NewPost/NewPost';
+import FullPost from './FullPost/FullPost';
 
 class Blog extends Component {
-
     state = {
-        posts: [],
-        selectedPostId: null,
-        error: false
-    }
-
-    componentDidMount() {
-        axiosInstance.get('/posts')
-            .then(response => {
-                // .data is the attribute from the json returned by the API that contains
-                // the array of posts
-                // Trimming the array to get only 4 posts 
-                const posts = response.data.slice(0, 4);
-                // Creating a new post obj addin 'Author' attribute to the post
-                const updatedPosts = posts.map(post => {
-                    // For each post in Posts, creates a new object using the spread operator  
-                    // and adds the attribute 'author'
-                    return {
-                        ...post,
-                        author: 'Max'
-                    };
-                });
-                this.setState({ posts: updatedPosts });
-            })
-            .catch(error => {
-                this.setState({ error: true });
-            });
-    }
-
-    postSelectedHandler = (id) => {
-        this.setState({ selectedPostId: id });
+        // Example of 'guard' - routing only if autheticated
+        auth: true
     }
 
     render() {
-        let posts = <p style={{ textAlign: "center" }}>Something went wrong!</p>
-        
-        // Renders if there's no error
-        if (!this.state.error) {
-            posts = this.state.posts.map(post => {
-                return <Post
-                    key={post.id}
-                    title={post.title}
-                    author={post.author}
-                    // clicked={() => this.postSelectedHandler(post.id)} />
-                    clicked={() => this.postSelectedHandler(post.id)} />
-            });
-        }
+
         return (
-            <div>
-                <section className="Posts">
-                    {posts}
-                </section>
-                <section>
-                    <FullPost id={this.state.selectedPostId} />
-                </section>
-                <section>
-                    <NewPost />
-                </section>
+            <div className="Blog">
+                <header>
+                    <nav>
+                        <ul>
+                            {/* With this routing, it's necessary to use the Link component
+                                instead of href to avoid refreshing the whole page when redirecting
+                                to that route. Link manages that URL properly
+                                <NavLink> is similar to <Link> but allows applying styling */}
+                            <li><NavLink to="/posts" exact>Posts</NavLink></li>
+                            <li><NavLink to={{
+                                // It's possible to add more parameters as:
+                                pathname: '/new-post',
+                                // hash: '#submit', // # anchor to link to a speific point in the page  
+                                // search: '?quick-submit=true' //search parameters 
+                            }}>New Post</NavLink></li>
+                        </ul>
+                    </nav>
+                </header>
+                {/* - The 'exact' property defines that this content will only be rendered if 
+                    the is exatcly as defined. If exact is not set, anything that starts
+                    with that path will render this content.
+                    - <Route path="/" exact render={() => <h1>Home</h1>}/>
+                    <Route path="/" render={() => <h1>Home 2</h1>}/> */}
+
+                 {/*Switch guarantees that only one route will be loaded, the first one
+                    matching the URL. */}
+                <Switch>
+                    {this.state.auth ? <Route path="/new-post" component={NewPost} /> : null}
+                    
+                    {/* This path contains a nested route. When this happens, the parent
+                    route cannot have the 'exact' property */}
+                    <Route path="/posts" component={Posts} />
+                    {/* This is a flexible route, since the id parameter can vary,
+                    so this needs to come to the end, otherwise other routes as "new-post"
+                    won't load. */}
+                    {/* <Route path="/:id" exact component={FullPost} /> */}
+                    {/* Route without path will direct all unknow route to the specified
+                    component or render. This DOESN'T WORK WITH <REDIRECT with PATH="/"> */}
+                    <Route render={() => <h1>Not found</h1>} />
+                </Switch>
             </div>
         );
     }
