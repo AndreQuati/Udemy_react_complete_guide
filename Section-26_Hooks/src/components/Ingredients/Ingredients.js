@@ -6,7 +6,7 @@ import Search from './Search';
 
 function Ingredients() {
 
-  const [ingredients, setIngredients] = useState([]); 
+  const [userIngredients, setUserIngredients] = useState([]); 
 
   return (
     <div className="App">
@@ -14,6 +14,7 @@ function Ingredients() {
 
       <section>
         <Search />
+        <IngredientList ingredients={userIngredients}/>
         {/* Need to add list here! */}
       </section>
     </div>
