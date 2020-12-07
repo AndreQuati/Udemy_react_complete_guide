@@ -23,9 +23,19 @@ describe('<NavigationItems />', () => {
         expect(wrapper.find(NavigationItem)).toHaveLength(2);
     });
 
+
+    // Tests expected to fail: Authentication is not yet implemented in this project
     it('Should render three <NavigationItem />  elements if authenticated', () => {
         // Setting the NavigationItem prop required for the scope of this test
-        wrapper.setProps({isAuthenticated:true});
+        wrapper.setProps({isAuthenticated: true});
         expect(wrapper.find(NavigationItem)).toHaveLength(3);
+    });
+
+    // Tests expected to fail: Authentication is not yet implemented in this project
+    it('Should display the logout option if authenticated', () => {
+        // Setting the NavigationItem prop required for the scope of this test
+        wrapper.setProps({isAuthenticated: true});
+        // The expected navigation item is written in the same way as in the code
+        expect(wrapper.contains(<NavigationItem link="/logout">Logout</NavigationItem>)).toEqual(true);
     });
 });
